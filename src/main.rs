@@ -44,19 +44,22 @@ fn bitmap_from_pixels(pixels: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
     let row_bytes = width / 8;
     let mut bitmap: Vec<u8> = vec![0; (row_bytes * height) as usize];
     for (i, chunk) in pixels.chunks(8).enumerate() {
-        let mut chunk_byte = std::string::String::new();
-        for pixel in chunk {
-            match pixel {
-                0 => chunk_byte.push_str("1"),
-                255 => chunk_byte.push_str("0"),
-                _ => panic!("derp"),
-            }
-        }
-        let chunk_byte = u8::from_str_radix(&chunk_byte, 2).unwrap();
-        bitmap[i] = chunk_byte;
+        bitmap[i] = chunk_to_byte(chunk);
     }
     bitmap
 }
+
+fn chunk_to_byte(chunk: &[u8]) -> u8 {
+    let mut sum: u8 = 0;
+    for pixel in chunk {
+        sum = sum << 1;
+        if *pixel == 255 {
+            sum += 1;
+        }
+    }
+    sum
+}
+
 fn bitmap_to_python_str(bitmap: Vec<u8>, width: u32, height: u32) -> String {
     let mut array_string = String::new();
     for (i, p) in bitmap.iter().enumerate() {
