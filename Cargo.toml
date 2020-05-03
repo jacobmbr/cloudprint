@@ -11,3 +11,6 @@ dither = "1.3.7"
 rand = "0.7.3"
 image = "0.23.3"
 tempfile = "3.1.0"
+serial = "0.4.0"
+serial-unix = "0.4.0"
+serialport = { version = "3.3.0", default-features = false}

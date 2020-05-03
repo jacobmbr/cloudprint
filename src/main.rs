@@ -1,12 +1,31 @@
 use dither;
 use dither::prelude::{Dither, Ditherer, Img, RGB};
 use image;
+use serialport::prelude::*;
 use std::fs::{remove_file, File};
 use std::io::prelude::*;
 use std::path::Path;
 use std::str::FromStr;
+use std::time::Duration;
 
 fn main() {
+    println!("derp!");
+    let s = SerialPortSettings {
+        baud_rate: 19200,
+        data_bits: DataBits::Eight,
+        flow_control: FlowControl::None,
+        parity: Parity::None,
+        stop_bits: StopBits::One,
+        timeout: Duration::from_millis(1),
+    };
+    let mut port = serialport::open_with_settings("/dev/serial0", &s).unwrap();
+    println!("{:?}", port.settings());
+    port.write(&[27, 55, 11, 120, 40]);
+    let printDensity: u8 = 10;
+    let printBreakTime: u8 = 2;
+    port.write(&[18, 35, (printBreakTime << 5) | printDensity]);
+    port.write(&[18, 84]);
+    return;
     let path = "/home/jacob/Desktop/dither/bulia/";
     let filename = "bulia2.jpeg";
     let tmpfile = "tmpfile.jpeg";
